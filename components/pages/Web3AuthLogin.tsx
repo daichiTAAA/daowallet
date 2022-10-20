@@ -21,8 +21,8 @@ const styles = {
 const clientId = process.env.NEXT_PUBLIC_CLIENTID; // get from https://dashboard.web3auth.io
 
 function Web3AuthLogin() {
-  const [web3auth, setWeb3auth] = useState(null);
-  const [provider, setProvider] = useState(null);
+  const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
+  const [provider, setProvider] = useState<SafeEventEmitterProvider | null>(null);
 
   useEffect(() => {
     const init = async () => {

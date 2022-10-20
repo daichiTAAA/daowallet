@@ -12,14 +12,18 @@ import Web3AuthLogin from './Web3AuthLogin';
 const Tabs = () => {
   return (
     <IonTabs>
-        <IonRouterOutlet>
-          <Route path="/tabs/feed" render={() => <Home />} exact={true} />
-          <Route path="/tabs/lists" render={() => <Lists />} exact={true} />
-          <Route path="/tabs/lists/:listId" render={() => <ListDetail />} exact={true} />
-          <Route path="/tabs/settings" render={() => <Settings />} exact={true} />
-          <Route path="/tabs/login" render={() => <Web3AuthLogin />} exact={true} />
-          <Route path="/tabs" render={() => <Redirect to="/tabs/feed" />} exact={true} />
-        </IonRouterOutlet>
+      <IonRouterOutlet>
+        <Route path="/tabs/feed" render={() => <Home />} exact={true} />
+        <Route path="/tabs/lists" render={() => <Lists />} exact={true} />
+        <Route
+          path="/tabs/lists/:listId"
+          render={() => <ListDetail match={undefined} />}
+          exact={true}
+        />
+        <Route path="/tabs/settings" render={() => <Settings />} exact={true} />
+        <Route path="/tabs/login" render={() => <Web3AuthLogin />} exact={true} />
+        <Route path="/tabs" render={() => <Redirect to="/tabs/feed" />} exact={true} />
+      </IonRouterOutlet>
       <IonTabBar slot="bottom">
         <IonTabButton tab="tab1" href="/tabs/feed">
           <IonIcon icon={flash} />
