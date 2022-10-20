@@ -14,6 +14,8 @@ const Store = new PullStateStore({
   settings: {
     enableNotifications: true,
   },
+  web3auth: null,
+  provider: null,
 });
 
 export default Store;

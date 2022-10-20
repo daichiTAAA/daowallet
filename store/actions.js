@@ -30,3 +30,15 @@ export const setDone = (list, item, done) => {
     }
   });
 };
+
+export const setWeb3Auth = web3auth => {
+  Store.update(s => {
+    s.web3auth = web3auth;
+  });
+};
+
+export const setProvider = provider => {
+  Store.update(s => {
+    s.provider = provider;
+  });
+};

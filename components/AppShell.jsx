@@ -1,4 +1,13 @@
-import { IonApp, IonLabel, IonRouterOutlet, setupIonicReact, IonTabs, IonTabBar, IonTabButton, IonIcon  } from '@ionic/react';
+import {
+  IonApp,
+  IonLabel,
+  IonRouterOutlet,
+  setupIonicReact,
+  IonTabs,
+  IonTabBar,
+  IonTabButton,
+  IonIcon,
+} from '@ionic/react';
 import { cog, flash, list } from 'ionicons/icons';
 import { StatusBar, Style } from '@capacitor/status-bar';
 
@@ -10,10 +19,11 @@ import Lists from './pages/Lists';
 import ListDetail from './pages/ListDetail';
 import Settings from './pages/Settings';
 import Tabs from './pages/Tabs';
+import { Web3Auth } from '@web3auth/web3auth';
 
 setupIonicReact({});
 
-window.matchMedia("(prefers-color-scheme: dark)").addListener(async (status) => {
+window.matchMedia('(prefers-color-scheme: dark)').addListener(async status => {
   try {
     await StatusBar.setStyle({
       style: status.matches ? Style.Dark : Style.Light,
