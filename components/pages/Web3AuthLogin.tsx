@@ -10,8 +10,9 @@ import {
 
 import { useEffect, useState } from 'react';
 import { Web3Auth } from '@web3auth/web3auth';
+import { OpenloginAdapter } from '@web3auth/openlogin-adapter';
 import { CHAIN_NAMESPACES, SafeEventEmitterProvider } from '@web3auth/base';
-import RPC from '../../rpcs/web3RPC'; // for using web3.js
+// import RPC from '../../rpcs/web3RPC'; // for using web3.js
 // import RPC from '../../rpcs/ethersRPC'; // for using ethers.js
 
 const styles = {
@@ -28,13 +29,26 @@ function Web3AuthLogin() {
     const init = async () => {
       try {
         const web3auth = new Web3Auth({
-          clientId,
           chainConfig: {
-            chainNamespace: CHAIN_NAMESPACES.EIP155,
-            chainId: '0x504',
-            rpcTarget: 'https://rpc.ankr.com/moonbeam', // This is the public RPC we have added, please pass on your own endpoint while creating an app
+            /*
+            you can pass your own chain configs here
+            */
+            chainNamespace: CHAIN_NAMESPACES.OTHER,
+            displayName: 'Astar',
+            ticker: 'ASTR',
+            tickerName: 'astar',
+          },
+          clientId: clientId, // get it from https://dashboard.web3auth.io
+        });
+
+        const openloginAdapter = new OpenloginAdapter({
+          adapterSettings: {
+            clientId, // get it from https://dashboard.web3auth.io
+            network: 'testnet',
+            uxMode: 'popup',
           },
         });
+        web3auth.configureAdapter(openloginAdapter);
 
         setWeb3auth(web3auth);
 
@@ -77,62 +91,16 @@ function Web3AuthLogin() {
     setProvider(null);
   };
 
-  const getChainId = async () => {
-    if (!provider) {
-      console.log('provider not initialized yet');
-      return;
-    }
-    const rpc = new RPC(provider);
-    const chainId = await rpc.getChainId();
-    console.log(chainId);
-  };
-  const getAccounts = async () => {
-    if (!provider) {
-      console.log('provider not initialized yet');
-      return;
-    }
-    const rpc = new RPC(provider);
-    const address = await rpc.getAccounts();
-    console.log(address);
-  };
-
-  const getBalance = async () => {
-    if (!provider) {
-      console.log('provider not initialized yet');
-      return;
-    }
-    const rpc = new RPC(provider);
-    const balance = await rpc.getBalance();
-    console.log(balance);
-  };
-
-  const sendTransaction = async () => {
-    if (!provider) {
-      console.log('provider not initialized yet');
-      return;
-    }
-    const rpc = new RPC(provider);
-    const receipt = await rpc.sendTransaction();
-    console.log(receipt);
-  };
-
-  const signMessage = async () => {
-    if (!provider) {
-      console.log('provider not initialized yet');
-      return;
-    }
-    const rpc = new RPC(provider);
-    const signedMessage = await rpc.signMessage();
-    console.log(signedMessage);
-  };
-
   const getPrivateKey = async () => {
+    //Assuming user is already logged in.
     if (!provider) {
       console.log('provider not initialized yet');
       return;
     }
-    const rpc = new RPC(provider);
-    const privateKey = await rpc.getPrivateKey();
+    const privateKey = await web3auth.provider.request({
+      method: 'private_key',
+    });
+    //Do something with privateKey
     console.log(privateKey);
   };
   const loggedInView = (
@@ -140,21 +108,6 @@ function Web3AuthLogin() {
       <IonRow className="grid grid-cols-12">
         <IonButton onClick={getUserInfo} className={styles.card}>
           Get User Info
-        </IonButton>
-        <IonButton onClick={getChainId} className={styles.card}>
-          Get Chain ID
-        </IonButton>
-        <IonButton onClick={getAccounts} className={styles.card}>
-          Get Accounts
-        </IonButton>
-        <IonButton onClick={getBalance} className={styles.card}>
-          Get Balance
-        </IonButton>
-        <IonButton onClick={sendTransaction} className={styles.card}>
-          Send Transaction
-        </IonButton>
-        <IonButton onClick={signMessage} className={styles.card}>
-          Sign Message
         </IonButton>
         <IonButton onClick={getPrivateKey} className={styles.card}>
           Get Private Key
