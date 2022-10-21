@@ -9,7 +9,7 @@ import {
 } from '@ionic/react';
 
 import { useEffect, useState } from 'react';
-import { Web3Auth } from '@web3auth/web3auth';
+import { Web3Auth } from '@web3auth/modal';
 import { OpenloginAdapter } from '@web3auth/openlogin-adapter';
 import { CHAIN_NAMESPACES, SafeEventEmitterProvider } from '@web3auth/base';
 // import RPC from '../../rpcs/web3RPC'; // for using web3.js
