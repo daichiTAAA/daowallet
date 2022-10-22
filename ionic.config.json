@@ -1,0 +1,7 @@
+{
+  "name": "Folios",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}

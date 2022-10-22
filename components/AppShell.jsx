@@ -19,7 +19,6 @@ import Lists from './pages/Lists';
 import ListDetail from './pages/ListDetail';
 import Settings from './pages/Settings';
 import Tabs from './pages/Tabs';
-import { Web3Auth } from '@web3auth/web3auth';
 
 setupIonicReact({});
 

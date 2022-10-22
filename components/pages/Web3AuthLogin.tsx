@@ -6,9 +6,12 @@ import {
   IonToolbar,
   IonTitle,
   IonButton,
+  IonLabel,
 } from '@ionic/react';
+import { Device } from '@capacitor/device';
+import Web3AuthIOS from '../../ios/App/App/plugins/Web3AuthIOS/Web3AuthIOS';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Web3Auth } from '@web3auth/modal';
 import { OpenloginAdapter } from '@web3auth/openlogin-adapter';
 import { CHAIN_NAMESPACES, SafeEventEmitterProvider } from '@web3auth/base';
@@ -23,7 +26,9 @@ const clientId = process.env.NEXT_PUBLIC_CLIENTID; // get from https://dashboard
 
 function Web3AuthLogin() {
   const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
+  const [web3authIOS, setWeb3authIOS] = useState<boolean>(false);
   const [provider, setProvider] = useState<SafeEventEmitterProvider | null>(null);
+  const [deviceInfo, setDeviceInfo] = useState('web');
 
   useEffect(() => {
     const init = async () => {
@@ -31,14 +36,16 @@ function Web3AuthLogin() {
         const web3auth = new Web3Auth({
           chainConfig: {
             /*
-            you can pass your own chain configs here
-            */
+              you can pass your own chain configs here
+              */
             chainNamespace: CHAIN_NAMESPACES.OTHER,
             displayName: 'Astar',
             ticker: 'ASTR',
             tickerName: 'astar',
           },
-          clientId: clientId, // get it from https://dashboard.web3auth.io
+          clientId:
+            clientId ||
+            'BHV75ODX9QpTBg3yxoQ0MNnTbQ4ksELPEDvkQN_KUAWdFkNdqgzmUZc2p48W1prowdNugWT91_4ydRFFBwap1dE', // get it from https://dashboard.web3auth.io
         });
 
         const openloginAdapter = new OpenloginAdapter({
@@ -50,12 +57,13 @@ function Web3AuthLogin() {
         });
         web3auth.configureAdapter(openloginAdapter);
 
+        logDeviceInfo();
+
         setWeb3auth(web3auth);
 
         await web3auth.initModal();
-        if (web3auth.provider) {
-          setProvider(web3auth.provider);
-        }
+
+        setProvider(web3auth.provider);
       } catch (error) {
         console.error(error);
       }
@@ -63,6 +71,13 @@ function Web3AuthLogin() {
 
     init();
   }, [setProvider, setWeb3auth]);
+
+  const logDeviceInfo = async () => {
+    const info = await Device.getInfo();
+    console.log(info.platform);
+    setDeviceInfo(info.platform);
+    return info;
+  };
 
   const login = async () => {
     if (!web3auth) {
@@ -97,12 +112,23 @@ function Web3AuthLogin() {
       console.log('provider not initialized yet');
       return;
     }
-    const privateKey = await web3auth.provider.request({
-      method: 'private_key',
-    });
+    if (!web3auth?.provider) {
+      console.log('web3auth not initialized yet');
+      return;
+    } else {
+      const privateKey = await web3auth.provider.request({
+        method: 'private_key',
+      });
+      const { getED25519Key } = await import('@toruslabs/openlogin-ed25519');
+      if (typeof privateKey === 'string') {
+        const ed25519key = getED25519Key(privateKey).sk.toString('hex');
+        console.log(`ed25519key is: ${ed25519key}`);
+      }
+      console.log(`private key is: ${privateKey}`);
+    }
     //Do something with privateKey
-    console.log(privateKey);
   };
+
   const loggedInView = (
     <>
       <IonRow className="grid grid-cols-12">
@@ -127,6 +153,58 @@ function Web3AuthLogin() {
     </IonRow>
   );
 
+  /////////   ios   start   ///////////
+
+  const loginIOS = async () => {
+    const web3authIOS = await Web3AuthIOS.web3AuthIOSlogin();
+    if (web3authIOS !== null) {
+      setWeb3authIOS(true);
+    }
+  };
+
+  const getPrivateKeyIOS = async () => {
+    //Assuming user is already logged in.
+    if (!web3authIOS) {
+      console.log('web3auth not initialized yet');
+      return;
+    } else {
+      const privateKey = await Web3AuthIOS.web3AuthIOSlogin();
+      console.log(privateKey);
+    }
+    //Do something with privateKey
+  };
+
+  const unloggedInViewIOS = (
+    <IonRow className="grid grid-cols-12">
+      <IonButton onClick={loginIOS} className="mt-10 col-span-8 col-start-3">
+        Login
+      </IonButton>
+    </IonRow>
+  );
+
+  const logoutIOS = async () => {
+    if (!web3authIOS) {
+      console.log('web3auth not initialized yet');
+      return;
+    }
+    setWeb3authIOS(false);
+  };
+
+  const loggedInViewIOS = (
+    <>
+      <IonRow className="grid grid-cols-12">
+        <IonButton onClick={getPrivateKeyIOS} className={styles.card}>
+          Get Private Key
+        </IonButton>
+        <IonButton onClick={logoutIOS} className={styles.card}>
+          Log Out
+        </IonButton>
+      </IonRow>
+    </>
+  );
+
+  //////////////// ios  end /////////////////
+
   return (
     <IonPage>
       <IonHeader>
@@ -134,7 +212,13 @@ function Web3AuthLogin() {
           <IonTitle>Login</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent>{provider ? loggedInView : unloggedInView}</IonContent>
+      <IonContent>
+        {deviceInfo === 'web' && (provider ? loggedInView : unloggedInView)}
+        {deviceInfo === 'ios' && (web3authIOS ? loggedInViewIOS : unloggedInViewIOS)}
+        {deviceInfo !== 'web' && deviceInfo !== 'ios' && deviceInfo !== 'android' && (
+          <IonLabel>not match device</IonLabel>
+        )}
+      </IonContent>
     </IonPage>
   );
 }

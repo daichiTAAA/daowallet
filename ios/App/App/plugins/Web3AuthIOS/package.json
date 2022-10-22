@@ -1,0 +1,8 @@
+{
+  "name": "folios-ios-web3auth",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=12"
+  }
+}
