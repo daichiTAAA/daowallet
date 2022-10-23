@@ -10,6 +10,7 @@ import {
 } from '@ionic/react';
 import { Device } from '@capacitor/device';
 import Web3AuthIOS from '../../ios/App/App/plugins/Web3AuthIOS/Web3AuthIOS';
+import Web3AuthAndroidPlugin from '../../android/app/src/main/java/com/folios/app/Web3AuthAndroidPlugin';
 
 import { useEffect, useState, useRef } from 'react';
 import { Web3Auth } from '@web3auth/modal';
@@ -27,6 +28,7 @@ const clientId = process.env.NEXT_PUBLIC_CLIENTID; // get from https://dashboard
 function Web3AuthLogin() {
   const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
   const [web3authIOS, setWeb3authIOS] = useState<boolean>(false);
+  const [web3authAndroid, setWeb3authAndroid] = useState<boolean>(false);
   const [provider, setProvider] = useState<SafeEventEmitterProvider | null>(null);
   const [deviceInfo, setDeviceInfo] = useState('web');
 
@@ -207,12 +209,53 @@ function Web3AuthLogin() {
 
   ///////////////  android  start  /////////////////
 
+  const loginAndroid = async () => {
+    const web3authAndroid = await Web3AuthAndroidPlugin.onCreate();
+    if (web3authAndroid !== null) {
+      setWeb3authAndroid(true);
+    }
+  };
+
+  const getPrivateKeyAndroid = async () => {
+    //Assuming user is already logged in.
+    if (!web3authIOS) {
+      console.log('web3auth not initialized yet');
+      return;
+    } else {
+      const privateKey = await loginAndroid();
+      console.log(privateKey);
+    }
+    //Do something with privateKey
+  };
+
   const unloggedInViewAndroid = (
     <IonRow className="grid grid-cols-12">
-      <IonButton onClick={loginIOS} className="mt-10 col-span-8 col-start-3">
+      <IonButton onClick={loginAndroid} className="mt-10 col-span-8 col-start-3">
         Login
       </IonButton>
     </IonRow>
+  );
+
+  const logoutAndroid = async () => {
+    if (!web3authAndroid) {
+      console.log('web3auth not initialized yet');
+      return;
+    }
+    Web3AuthAndroidPlugin.signOut();
+    setWeb3authIOS(false);
+  };
+
+  const loggedInViewAndroid = (
+    <>
+      <IonRow className="grid grid-cols-12">
+        <IonButton onClick={getPrivateKeyAndroid} className={styles.card}>
+          Get Private Key
+        </IonButton>
+        <IonButton onClick={logoutAndroid} className={styles.card}>
+          Log Out
+        </IonButton>
+      </IonRow>
+    </>
   );
 
   ///////////////  android  end  ///////////////////
@@ -227,7 +270,8 @@ function Web3AuthLogin() {
       <IonContent>
         {deviceInfo === 'web' && (provider ? loggedInView : unloggedInView)}
         {deviceInfo === 'ios' && (web3authIOS ? loggedInViewIOS : unloggedInViewIOS)}
-        {deviceInfo === 'android' && unloggedInViewAndroid}
+        {deviceInfo === 'android' &&
+          (web3authAndroid ? loggedInViewAndroid : unloggedInViewAndroid)}
         {deviceInfo !== 'web' && deviceInfo !== 'ios' && deviceInfo !== 'android' && (
           <IonLabel>not match device</IonLabel>
         )}
