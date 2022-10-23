@@ -205,6 +205,18 @@ function Web3AuthLogin() {
 
   //////////////// ios  end /////////////////
 
+  ///////////////  android  start  /////////////////
+
+  const unloggedInViewAndroid = (
+    <IonRow className="grid grid-cols-12">
+      <IonButton onClick={loginIOS} className="mt-10 col-span-8 col-start-3">
+        Login
+      </IonButton>
+    </IonRow>
+  );
+
+  ///////////////  android  end  ///////////////////
+
   return (
     <IonPage>
       <IonHeader>
@@ -215,6 +227,7 @@ function Web3AuthLogin() {
       <IonContent>
         {deviceInfo === 'web' && (provider ? loggedInView : unloggedInView)}
         {deviceInfo === 'ios' && (web3authIOS ? loggedInViewIOS : unloggedInViewIOS)}
+        {deviceInfo === 'android' && unloggedInViewAndroid}
         {deviceInfo !== 'web' && deviceInfo !== 'ios' && deviceInfo !== 'android' && (
           <IonLabel>not match device</IonLabel>
         )}

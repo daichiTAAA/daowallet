@@ -4,4 +4,6 @@
     <string name="title_activity_main">Folios</string>
     <string name="package_name">com.folios.app</string>
     <string name="custom_url_scheme">com.folios.app</string>
+    <string name="web3auth_project_id">BHV75ODX9QpTBg3yxoQ0MNnTbQ4ksELPEDvkQN_KUAWdFkNdqgzmUZc2p48W1prowdNugWT91_4ydRFFBwap1dE</string>
+<!--    <string name="web3auth_google_client_id"></string>-->
 </resources>
