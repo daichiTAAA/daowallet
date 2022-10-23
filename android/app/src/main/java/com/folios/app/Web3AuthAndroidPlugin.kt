@@ -14,7 +14,7 @@ import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.CapacitorPlugin
 
 
-@CapacitorPlugin(name = "Web3AuthAndroid")
+@CapacitorPlugin(name = "Web3AuthAndroidPlugin")
 class Web3AuthAndroidPlugin : Plugin() {
         // ...
         private lateinit var web3Auth: Web3Auth
@@ -31,6 +31,8 @@ class Web3AuthAndroidPlugin : Plugin() {
                     redirectUrl = Uri.parse("com.folios.app://auth")
                 )
             )
+
+            signIn()
 
             // Handle user signing in when app is not alive
 //            web3Auth.setResultUrl(intent?.data)
@@ -53,16 +55,14 @@ class Web3AuthAndroidPlugin : Plugin() {
 //              )
 //    }
 
-    @PluginMethod
-    fun onNewIntent(intent: Intent?) {
+    private fun onNewIntent(intent: Intent?) {
             onNewIntent(intent)
 
             // Handle user signing in when app is active
             web3Auth.setResultUrl(intent?.data)
         }
 
-    @PluginMethod
-    fun signIn() {
+    private fun signIn() {
             val selectedLoginProvider = Provider.GOOGLE   // Can be GOOGLE, FACEBOOK, TWITCH etc.
             val loginCompletableFuture: CompletableFuture<Web3AuthResponse> =
                 web3Auth.login(LoginParams(selectedLoginProvider))
@@ -73,6 +73,7 @@ class Web3AuthAndroidPlugin : Plugin() {
                     println(loginResponse)
                 } else {
                     // render error UI
+                    println(error)
                 }
             }
         }
