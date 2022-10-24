@@ -210,10 +210,8 @@ function Web3AuthLogin() {
   ///////////////  android  start  /////////////////
 
   const loginAndroid = async () => {
-    const web3authAndroid = await Web3AuthAndroidPlugin.onCreate();
-    if (web3authAndroid !== null) {
-      setWeb3authAndroid(true);
-    }
+    Web3AuthAndroidPlugin.signIn();
+    setWeb3authAndroid(true);
   };
 
   const getPrivateKeyAndroid = async () => {
