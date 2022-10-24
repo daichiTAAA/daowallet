@@ -5,5 +5,9 @@
     <string name="package_name">com.folios.app</string>
     <string name="custom_url_scheme">com.folios.app</string>
     <string name="web3auth_project_id">BHV75ODX9QpTBg3yxoQ0MNnTbQ4ksELPEDvkQN_KUAWdFkNdqgzmUZc2p48W1prowdNugWT91_4ydRFFBwap1dE</string>
+    <string name="login_with_google">Google login</string>
+    <string name="logout">logout</string>
+    <string name="not_logged_in">not logged in</string>
+    <string name="web3auth_google_client_id">774338308167-q463s7kpvja16l4l0kko3nb925ikds2p.apps.googleusercontent.com</string>
 <!--    <string name="web3auth_google_client_id"></string>-->
 </resources>

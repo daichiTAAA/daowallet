@@ -239,7 +239,6 @@ function Web3AuthLogin() {
       console.log('web3auth not initialized yet');
       return;
     }
-    Web3AuthAndroidPlugin.signOut();
     setWeb3authIOS(false);
   };
 

@@ -4,6 +4,8 @@ import com.getcapacitor.Plugin
 import com.getcapacitor.PluginCall
 import com.getcapacitor.PluginMethod
 import com.getcapacitor.annotation.CapacitorPlugin
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 
 @CapacitorPlugin(name = "Web3AuthAndroidPlugin")
@@ -12,13 +14,9 @@ class Web3AuthAndroidPlugin : Plugin() {
 
         @PluginMethod
         fun signIn(call: PluginCall) {
-            implementation.signIn()
-            call.resolve()
-        }
 
-       @PluginMethod
-        fun signOut(call: PluginCall) {
-            implementation.signOut()
-            call.resolve()
+                implementation.onCreate(saveInstanceState())
+                call.resolve()
+
         }
 }
