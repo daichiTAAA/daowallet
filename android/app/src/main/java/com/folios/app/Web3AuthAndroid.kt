@@ -26,15 +26,15 @@ class Web3AuthAndroid : AppCompatActivity() {
 
     private val gson = Gson()
 
-    public override fun onCreate(savedInstanceState: Bundle?) {
-        GlobalScope.launch(Dispatchers.Main){
+    public fun signIn(savedInstanceState: Bundle?) {
+//        GlobalScope.launch(Dispatchers.Main){
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
 
             web3Auth = Web3Auth(
                 Web3AuthOptions(
-                    context = MainActivity(),
+                    context = this,
                     clientId = getString(R.string.web3auth_project_id),
                     network = Web3Auth.Network.TESTNET, // MAINEET, TESTNET or CYAN
                     redirectUrl = Uri.parse("com.folios.app://auth"),
@@ -45,14 +45,14 @@ class Web3AuthAndroid : AppCompatActivity() {
 
             // Setup UI and event handlers
             val signInButton = findViewById<Button>(R.id.signInButton)
-            signInButton.setOnClickListener { signIn() }
+            signInButton.setOnClickListener { logIn() }
 
             val signOutButton = findViewById<Button>(R.id.signOutButton)
             signOutButton.setOnClickListener { signOut() }
 
             reRender(Web3AuthResponse())
      }
-    }
+//    }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -61,7 +61,7 @@ class Web3AuthAndroid : AppCompatActivity() {
         web3Auth.setResultUrl(intent?.data)
     }
 
-    private fun signIn() {
+    private fun logIn() {
         val selectedLoginProvider = Provider.GOOGLE   // Can be GOOGLE, FACEBOOK, TWITCH etc.
         val loginCompletableFuture: CompletableFuture<Web3AuthResponse> =
             web3Auth.login(

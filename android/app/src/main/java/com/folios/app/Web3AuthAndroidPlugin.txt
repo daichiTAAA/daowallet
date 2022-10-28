@@ -15,8 +15,7 @@ class Web3AuthAndroidPlugin : Plugin() {
         @PluginMethod
         fun signIn(call: PluginCall) {
 
-                implementation.onCreate(saveInstanceState())
+                implementation.signIn(saveInstanceState())
                 call.resolve()
-
         }
 }
