@@ -9,8 +9,6 @@ import {
   IonLabel,
 } from '@ionic/react';
 import { Device } from '@capacitor/device';
-import Web3AuthIOS from '../../ios/App/App/plugins/Web3AuthIOS/Web3AuthIOS';
-import Web3AuthAndroidPlugin from '../../android/app/src/main/java/com/folios/app/Web3AuthAndroidPlugin';
 
 import { useEffect, useState, useRef } from 'react';
 import { Web3Auth } from '@web3auth/modal';
@@ -18,6 +16,10 @@ import { OpenloginAdapter } from '@web3auth/openlogin-adapter';
 import { CHAIN_NAMESPACES, SafeEventEmitterProvider } from '@web3auth/base';
 // import RPC from '../../rpcs/web3RPC'; // for using web3.js
 // import RPC from '../../rpcs/ethersRPC'; // for using ethers.js
+
+import Web3AuthIOS from '../../ios/App/App/plugins/Web3AuthIOS/Web3AuthIOS';
+import Web3AuthAndroidPlugin from '../../android/app/src/main/java/com/folios/app/Web3AuthAndroidPlugin';
+import { W3aCustom } from '../../w3a-custom/src';
 
 const styles = {
   card: 'mt-2 col-span-8 col-start-3',
@@ -226,10 +228,18 @@ function Web3AuthLogin() {
     //Do something with privateKey
   };
 
+  const pluginTest = async () => {
+    const pluginTestReturnValue = W3aCustom.echo({ value: 'Hello!' });
+    console.log(pluginTestReturnValue);
+  };
+
   const unloggedInViewAndroid = (
     <IonRow className="grid grid-cols-12">
       <IonButton onClick={loginAndroid} className="mt-10 col-span-8 col-start-3">
         Login
+      </IonButton>
+      <IonButton onClick={pluginTest} className={styles.card}>
+        Plugin Test
       </IonButton>
     </IonRow>
   );

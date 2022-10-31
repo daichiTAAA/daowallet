@@ -38,6 +38,7 @@
     "react-router-dom": "^5.2.0",
     "react-virtuoso": "^1.1.1",
     "tailwindcss": "^2.2.0",
+    "w3a-custom": "file:w3a-custom",
     "web3": "^1.8.0"
   },
   "devDependencies": {
