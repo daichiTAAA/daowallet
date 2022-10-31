@@ -19,7 +19,7 @@ import { CHAIN_NAMESPACES, SafeEventEmitterProvider } from '@web3auth/base';
 
 import Web3AuthIOS from '../../ios/App/App/plugins/Web3AuthIOS/Web3AuthIOS';
 import Web3AuthAndroidPlugin from '../../android/app/src/main/java/com/folios/app/Web3AuthAndroidPlugin';
-import { W3aCustom } from '../../w3a-custom/src';
+// import { W3aCustom } from '../../w3a-custom/src';
 
 const styles = {
   card: 'mt-2 col-span-8 col-start-3',
@@ -229,8 +229,8 @@ function Web3AuthLogin() {
   };
 
   const pluginTest = async () => {
-    const pluginTestReturnValue = W3aCustom.echo({ value: 'Hello!' });
-    console.log(pluginTestReturnValue);
+    // const pluginTestReturnValue = W3aCustom.echo({ value: 'Hello!' });
+    // console.log(pluginTestReturnValue);
   };
 
   const unloggedInViewAndroid = (
