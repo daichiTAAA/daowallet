@@ -11,8 +11,8 @@ const config: CapacitorConfig = {
     },
   },
   server: {
-    // url: 'http://192.168.0.20:3000/',
-    url: 'http://192.168.203.126:3000/',
+    url: 'http://192.168.0.20:3000/',
+    // url: 'http://192.168.203.126:3000/',
     cleartext: true,
   },
   cordova: {},
