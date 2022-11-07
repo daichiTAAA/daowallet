@@ -104,6 +104,7 @@ function Web3AuthLogin() {
   const logout = async () => {
     if (!web3auth) {
       console.log('web3auth not initialized yet');
+      setProvider(null);
       return;
     }
     await web3auth.logout();
