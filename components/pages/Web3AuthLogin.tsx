@@ -33,6 +33,7 @@ function Web3AuthLogin() {
   const [web3authAndroid, setWeb3authAndroid] = useState<boolean>(false);
   const [provider, setProvider] = useState<SafeEventEmitterProvider | null>(null);
   const [deviceInfo, setDeviceInfo] = useState('web');
+  const [androidPrivateKey, setAndroidPrivateKey] = useState<Object | String | null>(null);
 
   useEffect(() => {
     const init = async () => {
@@ -213,8 +214,14 @@ function Web3AuthLogin() {
   ///////////////  android  start  /////////////////
 
   const loginAndroid = async () => {
-    W3aCustom.login();
+    let privKeyAndroid = await W3aCustom.login();
+    console.log('priKeyANdroid is: ', privKeyAndroid);
+
+    // if (typeof privKeyAndroid.value !== null) {
+    setAndroidPrivateKey(privKeyAndroid);
+    // }
     setWeb3authAndroid(true);
+    return privKeyAndroid;
   };
 
   const getPrivateKeyAndroid = async () => {
@@ -256,6 +263,7 @@ function Web3AuthLogin() {
   const loggedInViewAndroid = (
     <>
       <IonRow className="grid grid-cols-12">
+        {`androidPrivateKey is: ${String(androidPrivateKey)}`}
         <IonButton onClick={getPrivateKeyAndroid} className={styles.card}>
           Get Private Key
         </IonButton>
