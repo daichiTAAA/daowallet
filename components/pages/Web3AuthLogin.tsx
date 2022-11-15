@@ -34,6 +34,7 @@ function Web3AuthLogin() {
   const [web3authAndroid, setWeb3authAndroid] = useState<boolean>(false);
   const [provider, setProvider] = useState<SafeEventEmitterProvider | null>(null);
   const [deviceInfo, setDeviceInfo] = useState('web');
+  const [iosPrivateKey, setIosPrivateKey] = useState<Object | String | null>(null);
   const [androidPrivateKey, setAndroidPrivateKey] = useState<Object | String | null>(null);
 
   useEffect(() => {
@@ -163,10 +164,8 @@ function Web3AuthLogin() {
   /////////   ios   start   ///////////
 
   const loginIOS = async () => {
-    const web3authIOS = await Web3AuthIOS.web3AuthIOSlogin();
-    if (web3authIOS !== null) {
-      setWeb3authIOS(true);
-    }
+    Web3AuthIOS.web3AuthIOSlogin();
+    setWeb3authIOS(true);
   };
 
   const getPrivateKeyIOS = async () => {
@@ -175,10 +174,12 @@ function Web3AuthLogin() {
       console.log('web3auth not initialized yet');
       return;
     } else {
-      const privateKey = await Web3AuthIOS.web3AuthIOSlogin();
+      const privateKey = await Web3AuthIOS.getPrivateKeyIos();
+      setIosPrivateKey(privateKey);
       console.log(privateKey);
     }
     //Do something with privateKey
+    console.log('iosPrivateKey is: ', iosPrivateKey);
   };
 
   const unloggedInViewIOS = (
@@ -200,6 +201,9 @@ function Web3AuthLogin() {
   const loggedInViewIOS = (
     <>
       <IonRow className="grid grid-cols-12">
+        <IonLabel className={styles.card}>{`iosPrivateKey is: ${JSON.stringify(
+          iosPrivateKey
+        )}`}</IonLabel>
         <IonButton onClick={getPrivateKeyIOS} className={styles.card}>
           Get Private Key
         </IonButton>

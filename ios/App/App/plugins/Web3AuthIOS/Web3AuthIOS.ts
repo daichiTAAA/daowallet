@@ -6,7 +6,8 @@ export interface Web3AuthState {
 }
 
 export interface Web3AuthIOSType {
-  web3AuthIOSlogin: () => Web3AuthState;
+  web3AuthIOSlogin: () => void;
+  getPrivateKeyIos: () => Web3AuthIOSType;
 }
 
 const Web3AuthIOS = registerPlugin<Web3AuthIOSType>('Web3AuthIOS');
