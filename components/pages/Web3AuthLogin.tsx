@@ -7,6 +7,7 @@ import {
   IonTitle,
   IonButton,
   IonLabel,
+  IonCard,
 } from '@ionic/react';
 import { Device } from '@capacitor/device';
 
@@ -218,7 +219,6 @@ function Web3AuthLogin() {
     console.log('priKeyANdroid is: ', privKeyAndroid);
 
     // if (typeof privKeyAndroid.value !== null) {
-    setAndroidPrivateKey(privKeyAndroid);
     // }
     setWeb3authAndroid(true);
     return privKeyAndroid;
@@ -226,12 +226,21 @@ function Web3AuthLogin() {
 
   const getPrivateKeyAndroid = async () => {
     //Assuming user is already logged in.
-    if (!web3authIOS) {
+    if (!web3authAndroid) {
       console.log('web3auth not initialized yet');
       return;
     } else {
-      const privateKey = await loginAndroid();
-      console.log(privateKey);
+      const privateKey = await W3aCustom.getPrivateKey()
+        .then(result => {
+          const resultKey = String(result.value).replace('Intent { act=', '').replace(' }', '');
+          console.log('resultKey: ', resultKey);
+          setAndroidPrivateKey(resultKey);
+          return resultKey;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      console.log('privateKey: ', privateKey);
     }
     //Do something with privateKey
   };
@@ -257,13 +266,18 @@ function Web3AuthLogin() {
       console.log('web3auth not initialized yet');
       return;
     }
-    setWeb3authIOS(false);
+    W3aCustom.logout();
+    setAndroidPrivateKey(null);
+    setWeb3authAndroid(false);
+    console.log('privateKey is:', androidPrivateKey);
   };
 
   const loggedInViewAndroid = (
     <>
       <IonRow className="grid grid-cols-12">
-        {`androidPrivateKey is: ${String(androidPrivateKey)}`}
+        <IonLabel className={styles.card}>{`androidPrivateKey is: ${String(
+          androidPrivateKey
+        )}`}</IonLabel>
         <IonButton onClick={getPrivateKeyAndroid} className={styles.card}>
           Get Private Key
         </IonButton>
