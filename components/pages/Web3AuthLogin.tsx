@@ -16,17 +16,10 @@ import { useEffect, useState, useRef } from 'react';
 import { Web3Auth } from '@web3auth/modal';
 import { OpenloginAdapter } from '@web3auth/openlogin-adapter';
 import { CHAIN_NAMESPACES, Maybe, SafeEventEmitterProvider } from '@web3auth/base';
-// import RPC from '../../rpcs/web3RPC'; // for using web3.js
-// import RPC from '../../rpcs/ethersRPC'; // for using ethers.js
-// Import the keyring as required
 import { Keyring } from '@polkadot/api';
-import { cryptoWaitReady } from '@polkadot/util-crypto';
 
 import Web3AuthIOS from '../../ios/App/App/plugins/Web3AuthIOS/Web3AuthIOS';
-// import Web3AuthAndroidPlugin from '../../android/app/src/main/java/com/folios/app/Web3AuthAndroidPlugin';
 import { W3aCustom } from '../../w3a-custom/src';
-import { keys } from 'react-virtuoso/dist/AATree';
-import { Capacitor } from '@capacitor/core';
 
 const styles = {
   card: 'mt-2 col-span-8 col-start-3',
@@ -153,11 +146,6 @@ function Web3AuthLogin() {
       privateKey = await web3auth.provider.request({
         method: 'private_key',
       });
-      // const { getED25519Key } = await import('@toruslabs/openlogin-ed25519');
-      // if (typeof privateKey === 'string') {
-      //   const ed25519key = getED25519Key(privateKey).sk.toString('hex');
-      //   console.log(`ed25519key is: ${ed25519key}`);
-      // }
       console.log(`private key is: ${privateKey}`);
     }
     //Do something with privateKey
@@ -274,8 +262,6 @@ function Web3AuthLogin() {
     let privKeyAndroid = await W3aCustom.login();
     console.log('priKeyANdroid is: ', privKeyAndroid);
 
-    // if (typeof privKeyAndroid.value !== null) {
-    // }
     setWeb3authAndroid(true);
     return privKeyAndroid;
   };
