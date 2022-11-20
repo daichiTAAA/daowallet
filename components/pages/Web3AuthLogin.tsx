@@ -14,9 +14,11 @@ import { Device } from '@capacitor/device';
 import { useEffect, useState, useRef } from 'react';
 import { Web3Auth } from '@web3auth/modal';
 import { OpenloginAdapter } from '@web3auth/openlogin-adapter';
-import { CHAIN_NAMESPACES, SafeEventEmitterProvider } from '@web3auth/base';
+import { CHAIN_NAMESPACES, Maybe, SafeEventEmitterProvider } from '@web3auth/base';
 // import RPC from '../../rpcs/web3RPC'; // for using web3.js
 // import RPC from '../../rpcs/ethersRPC'; // for using ethers.js
+// Import the keyring as required
+import { Keyring } from '@polkadot/api';
 
 import Web3AuthIOS from '../../ios/App/App/plugins/Web3AuthIOS/Web3AuthIOS';
 // import Web3AuthAndroidPlugin from '../../android/app/src/main/java/com/folios/app/Web3AuthAndroidPlugin';
@@ -86,6 +88,8 @@ function Web3AuthLogin() {
     return info;
   };
 
+  ///////////////  web  start  ///////////////////
+
   const login = async () => {
     if (!web3auth) {
       console.log('web3auth not initialized yet');
@@ -114,8 +118,22 @@ function Web3AuthLogin() {
     setProvider(null);
   };
 
+  const createKeyring = async (privateKey: string, keyringName: string) => {
+    // Create a keyring instance
+    const keyring = new Keyring({ type: 'sr25519' });
+    const privateKeyWithHex = `0x${privateKey}`;
+    const pair = keyring.addFromUri(privateKeyWithHex, { name: keyringName });
+    console.log(
+      `
+      ${pair.meta.name}: has address ${pair.address} with publicKey [${pair.publicKey}]
+      polkadot address: ${keyring.encodeAddress(pair.publicKey, 0)}
+      `
+    );
+  };
+
   const getPrivateKey = async () => {
     //Assuming user is already logged in.
+    let privateKey: Maybe<string> | null;
     if (!provider) {
       console.log('provider not initialized yet');
       return;
@@ -124,17 +142,21 @@ function Web3AuthLogin() {
       console.log('web3auth not initialized yet');
       return;
     } else {
-      const privateKey = await web3auth.provider.request({
+      privateKey = await web3auth.provider.request({
         method: 'private_key',
       });
-      const { getED25519Key } = await import('@toruslabs/openlogin-ed25519');
-      if (typeof privateKey === 'string') {
-        const ed25519key = getED25519Key(privateKey).sk.toString('hex');
-        console.log(`ed25519key is: ${ed25519key}`);
-      }
+      // const { getED25519Key } = await import('@toruslabs/openlogin-ed25519');
+      // if (typeof privateKey === 'string') {
+      //   const ed25519key = getED25519Key(privateKey).sk.toString('hex');
+      //   console.log(`ed25519key is: ${ed25519key}`);
+      // }
       console.log(`private key is: ${privateKey}`);
     }
     //Do something with privateKey
+    if (typeof privateKey == 'string') {
+      const keyringName = 'testname';
+      createKeyring(privateKey, keyringName);
+    }
   };
 
   const loggedInView = (
@@ -160,6 +182,8 @@ function Web3AuthLogin() {
       </IonButton>
     </IonRow>
   );
+
+  ///////////////  web  end  ///////////////////
 
   /////////   ios   start   ///////////
 
