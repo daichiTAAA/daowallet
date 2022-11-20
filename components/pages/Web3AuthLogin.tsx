@@ -10,6 +10,7 @@ import {
   IonCard,
 } from '@ionic/react';
 import { Device } from '@capacitor/device';
+import { Preferences } from '@capacitor/preferences';
 
 import { useEffect, useState, useRef } from 'react';
 import { Web3Auth } from '@web3auth/modal';
@@ -19,10 +20,13 @@ import { CHAIN_NAMESPACES, Maybe, SafeEventEmitterProvider } from '@web3auth/bas
 // import RPC from '../../rpcs/ethersRPC'; // for using ethers.js
 // Import the keyring as required
 import { Keyring } from '@polkadot/api';
+import { cryptoWaitReady } from '@polkadot/util-crypto';
 
 import Web3AuthIOS from '../../ios/App/App/plugins/Web3AuthIOS/Web3AuthIOS';
 // import Web3AuthAndroidPlugin from '../../android/app/src/main/java/com/folios/app/Web3AuthAndroidPlugin';
 import { W3aCustom } from '../../w3a-custom/src';
+import { keys } from 'react-virtuoso/dist/AATree';
+import { Capacitor } from '@capacitor/core';
 
 const styles = {
   card: 'mt-2 col-span-8 col-start-3',
@@ -129,6 +133,10 @@ function Web3AuthLogin() {
       polkadot address: ${keyring.encodeAddress(pair.publicKey, 0)}
       `
     );
+    await Preferences.set({
+      key: `${pair.meta.name}`,
+      value: `{"keyringName":"${pair.meta.name}","privateKey":"${privateKeyWithHex}","publicKey":[${pair.publicKey}],"address":"${pair.address}"}`,
+    });
   };
 
   const getPrivateKey = async () => {
@@ -159,6 +167,20 @@ function Web3AuthLogin() {
     }
   };
 
+  const getAllKeyringNames = async () => {
+    const allKeyringNames = await Preferences.keys();
+    console.log('allKeys: ', allKeyringNames.keys);
+    return allKeyringNames.keys;
+  };
+
+  const getAllKeyringInfo = async () => {
+    const account = (await getAllKeyringNames()).forEach(async keyringName => {
+      const keyringInfo = await (await Preferences.get({ key: keyringName })).value;
+      const keyringInfoJson = JSON.parse(String(keyringInfo));
+      console.log(keyringInfoJson);
+    });
+  };
+
   const loggedInView = (
     <>
       <IonRow className="grid grid-cols-12">
@@ -167,6 +189,12 @@ function Web3AuthLogin() {
         </IonButton>
         <IonButton onClick={getPrivateKey} className={styles.card}>
           Get Private Key
+        </IonButton>
+        <IonButton onClick={getAllKeyringNames} className={styles.card}>
+          Get All Keys
+        </IonButton>
+        <IonButton onClick={getAllKeyringInfo} className={styles.card}>
+          getAllKeyringInfo
         </IonButton>
         <IonButton onClick={logout} className={styles.card}>
           Log Out
